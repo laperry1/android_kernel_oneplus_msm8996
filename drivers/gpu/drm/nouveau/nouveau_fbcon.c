@@ -568,7 +568,10 @@ nouveau_fbcon_init(struct drm_device *dev)
 	if (ret)
 		goto fini;
 
+<<<<<<< HEAD
 	fbcon->helper.fbdev->pixmap.buf_align = 4;
+=======
+>>>>>>> ee20274fabe1... drm/fb-helper: Propagate errors from initial config failure
 	return 0;
 
 fini:
