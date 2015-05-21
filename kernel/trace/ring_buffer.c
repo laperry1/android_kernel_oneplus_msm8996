@@ -2749,7 +2749,10 @@ ring_buffer_lock_reserve(struct ring_buffer *buffer, unsigned long length)
 	preempt_disable_notrace();
 
 	if (unlikely(atomic_read(&buffer->record_disabled)))
-		goto out;
+		goto out_nocheck;
+
+	if (unlikely(trace_recursive_lock()))
+		goto out_nocheck;
 
 	cpu = raw_smp_processor_id();
 
@@ -2762,9 +2765,6 @@ ring_buffer_lock_reserve(struct ring_buffer *buffer, unsigned long length)
 		goto out;
 
 	if (unlikely(length > BUF_MAX_DATA_SIZE))
-		goto out;
-
-	if (unlikely(trace_recursive_lock(cpu_buffer)))
 		goto out;
 
 	event = rb_reserve_next_event(buffer, cpu_buffer, length);
