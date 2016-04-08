@@ -48,6 +48,7 @@
 	.endm
 #else
 	.macro  get_fault_ip t1 t2
+	loadgp
 	/* t1 = this_cpu_ptr(&exception_data) */
 	addil LT%exception_data,%r27
 	LDREG RT%exception_data(%r1),\t2
