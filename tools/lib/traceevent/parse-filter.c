@@ -1169,8 +1169,6 @@ process_filter(struct event_format *event, struct filter_arg **parg,
 	if (ret < 0)
 		goto fail;
 
-	*parg = current_op;
-
 	free(token);
 	return 0;
 
