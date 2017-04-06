@@ -626,9 +626,8 @@ else
 KBUILD_CFLAGS	+= -O3
 endif
 
-KBUILD_CFLAGS 	+= $(call cc-disable-warning,maybe-uninitialized,) \
-		   $(call cc-disable-warning,unused-variable,) \
-		   $(call cc-disable-warning,unused-function)
+# Needed to unbreak GCC 7.x and above
+KBUILD_CFLAGS   += $(call cc-option,-fno-store-merging,)
 
 # Tell gcc to never replace conditional load with a non-conditional one
 KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
