@@ -92,12 +92,6 @@
  */
 #define SLEEP_SET_HW_KEY_MS 300
 
-
-#define QSEECOM_ALIGN_SIZE    0x40
-#define QSEECOM_ALIGN_MASK    (QSEECOM_ALIGN_SIZE - 1)
-#define QSEECOM_ALIGN(x)\
-	((x + QSEECOM_ALIGN_SIZE) & (~QSEECOM_ALIGN_MASK))
-
 /* hdcp command status */
 #define HDCP_SUCCESS      0
 
@@ -1323,8 +1317,7 @@ static void hdcp_lib_msg_recvd(struct hdcp_lib_handle *handle)
 	}
 
 exit:
-	if (msg)
-		kzfree(msg);
+	kzfree(msg);
 
 	hdcp_lib_wakeup_client(handle, &cdata);
 

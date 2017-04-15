@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2015, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2012-2016, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -50,6 +50,9 @@
 #define FORMAT_ALAC         0x0017
 #define FORMAT_VORBIS       0x0018
 #define FORMAT_APE          0x0019
+#define FORMAT_G711_ALAW_FS 0x001a
+#define FORMAT_G711_MLAW_FS 0x001b
+#define FORMAT_DTS          0x001c
 
 #define ENCDEC_SBCBITRATE   0x0001
 #define ENCDEC_IMMEDIATE_DECODE 0x0002
@@ -181,6 +184,7 @@ struct audio_client {
 	int                    session;
 	app_cb		       cb;
 	atomic_t	       cmd_state;
+	atomic_t	       cmd_state_pp;
 	/* Relative or absolute TS */
 	atomic_t	       time_flag;
 	atomic_t	       nowait_cmd_cnt;
@@ -350,6 +354,10 @@ int q6asm_enc_cfg_blk_aac(struct audio_client *ac,
 			 uint32_t bit_rate,
 			 uint32_t mode, uint32_t format);
 
+int q6asm_enc_cfg_blk_g711(struct audio_client *ac,
+			 uint32_t frames_per_buf,
+			uint32_t sample_rate);
+
 int q6asm_enc_cfg_blk_pcm(struct audio_client *ac,
 			uint32_t rate, uint32_t channels);
 
@@ -515,6 +523,8 @@ int q6asm_set_multich_gain(struct audio_client *ac, uint32_t channels,
 int q6asm_set_mute(struct audio_client *ac, int muteflag);
 
 int q6asm_get_session_time(struct audio_client *ac, uint64_t *tstamp);
+
+int q6asm_get_session_time_legacy(struct audio_client *ac, uint64_t *tstamp);
 
 int q6asm_send_audio_effects_params(struct audio_client *ac, char *params,
 				    uint32_t params_length);
