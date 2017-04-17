@@ -5076,10 +5076,10 @@ void limProcessRxScanEvent(tpAniSirGlobal pMac, void *buf)
 
     switch (pScanEvent->event)
     {
-        case SIR_SCAN_EVENT_STARTED:
+        case LIM_SCAN_EVENT_STARTED:
             break;
-        case SIR_SCAN_EVENT_START_FAILED:
-        case SIR_SCAN_EVENT_COMPLETED:
+        case LIM_SCAN_EVENT_START_FAILED:
+        case LIM_SCAN_EVENT_COMPLETED:
             pMac->lim.fOffloadScanPending = 0;
             pMac->lim.fOffloadScanP2PSearch = 0;
             pMac->lim.fOffloadScanP2PListen = 0;
@@ -5105,7 +5105,7 @@ void limProcessRxScanEvent(tpAniSirGlobal pMac, void *buf)
                 limSendScanOffloadComplete(pMac, pScanEvent);
             }
             break;
-        case SIR_SCAN_EVENT_FOREIGN_CHANNEL:
+        case LIM_SCAN_EVENT_FOREIGN_CHANNEL:
             if (P2P_SCAN_TYPE_LISTEN == pScanEvent->p2pScanType)
             {
                 /*Send Ready on channel indication to SME */
@@ -5126,9 +5126,9 @@ void limProcessRxScanEvent(tpAniSirGlobal pMac, void *buf)
                 limAddScanChannelInfo(pMac, vos_freq_to_chan(pScanEvent->chanFreq));
             }
             break;
-        case SIR_SCAN_EVENT_BSS_CHANNEL:
-        case SIR_SCAN_EVENT_DEQUEUED:
-        case SIR_SCAN_EVENT_PREEMPTED:
+        case LIM_SCAN_EVENT_BSS_CHANNEL:
+        case LIM_SCAN_EVENT_DEQUEUED:
+        case LIM_SCAN_EVENT_PREEMPTED:
         default:
             VOS_TRACE(VOS_MODULE_ID_PE, VOS_TRACE_LEVEL_DEBUG,
                     "Received unhandled scan event %u", pScanEvent->event);
