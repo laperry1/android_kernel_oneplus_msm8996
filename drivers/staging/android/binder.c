@@ -2528,11 +2528,78 @@ static void binder_release_work(struct list_head *list)
 			kfree(death);
 			binder_stats_deleted(BINDER_STAT_DEATH);
 		} break;
+		case BINDER_WORK_NODE:
+			pr_debug("unfinished BINDER_WORK_NODE, proc has died\n");
+			break;
 		default:
 			pr_err("unexpected work type, %d, not freed\n",
 			       w->type);
+			BUG();
 			break;
 		}
+		spin_lock(&wlist->lock);
+	}
+	spin_unlock(&wlist->lock);
+}
+
+static u64 binder_get_seq(struct binder_seq_head *tracker)
+{
+	u64 seq;
+	/*
+	 * No lock needed, worst case we return an overly conservative
+	 * value.
+	 */
+	seq = READ_ONCE(tracker->lowest_seq);
+	return seq;
+}
+
+atomic64_t binder_seq_count;
+
+static inline u64 binder_get_next_seq(void)
+{
+	return atomic64_inc_return(&binder_seq_count);
+}
+
+static void binder_add_seq(struct binder_seq_node *node,
+			   struct binder_seq_head *tracker)
+{
+	spin_lock(&tracker->lock);
+	/*
+	 * Was the node previously added?
+	 * - binder_get_thread/put_thread should never be nested
+	 * - binder_queue_for_zombie_cleanup should first delete and then
+	 * enqueue, so this shouldn't happen.
+	 */
+	BUG_ON(!list_empty(&node->list_node));
+
+	node->active_seq = binder_get_next_seq();
+	list_add_tail(&node->list_node, &tracker->active_threads);
+	if (node->active_seq < READ_ONCE(tracker->lowest_seq))
+		WRITE_ONCE(tracker->lowest_seq, node->active_seq);
+
+	tracker->active_count++;
+	if (tracker->active_count > tracker->max_active_count)
+		tracker->max_active_count = tracker->active_count;
+	spin_unlock(&tracker->lock);
+}
+
+static void binder_del_seq(struct binder_seq_node *node,
+				 struct binder_seq_head *tracker)
+{
+	spin_lock(&tracker->lock);
+	/*
+	 * No need to track leftmost node, the queue tracks it already
+	 */
+	list_del_init(&node->list_node);
+
+	if (!list_empty(&tracker->active_threads)) {
+		struct binder_seq_node *tmp;
+
+		tmp = list_first_entry(&tracker->active_threads, typeof(*tmp),
+				       list_node);
+		WRITE_ONCE(tracker->lowest_seq, tmp->active_seq);
+	} else {
+		WRITE_ONCE(tracker->lowest_seq, ~0ULL);
 	}
 
 }
