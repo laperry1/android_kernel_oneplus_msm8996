@@ -408,8 +408,8 @@ KBUILD_CFLAGS   := $(GRAPHITE) -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs 
            -funswitch-loops -fpredictive-commoning -fgcse-after-reload \
 		   -fno-delete-null-pointer-checks -Wno-error=bool-compare \
 		   -ftree-loop-vectorize -ftree-loop-distribute-patterns -ftree-slp-vectorize \
-           -fvect-cost-model -ftree-partial-pre -Wno-error=unused-const-variable= \
-           -fgcse-lm -fgcse-sm -fsched-spec-load -fsingle-precision-constant -std=gnu89
+           -fvect-cost-model -ftree-partial-pre -Wno-error=unused-const-variable= -Wno-error=misleading-indentation\
+           -fgcse-lm -fgcse-sm -fsched-spec-load -fsingle-precision-constant -Wno-bool-compare -Wno-misleading-indentation -std=gnu89
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
 KBUILD_AFLAGS   := -D__ASSEMBLY__
