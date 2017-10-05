@@ -372,6 +372,7 @@ CHECK		= sparse
 CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
 		  -Wbitwise -Wno-return-void $(CF)
 
+OPTS			= -mcpu=cortex-a57.cortex-a53 -mtune=cortex-a57.cortex-a53
 GCC6WARNINGS	= -Wno-bool-compare -Wno-misleading-indentation -Wno-format -Wno-logical-not-parentheses -Wno-discarded-array-qualifiers
 CFLAGS_MODULE   =
 AFLAGS_MODULE   =
@@ -404,7 +405,7 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
 		   -Werror-implicit-function-declaration \
 		   -Wno-format-security \
-		   -std=gnu89 $(GCC6WARNINGS)
+		   -std=gnu89 $(OPTS) $(GCC6WARNINGS)
 
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
