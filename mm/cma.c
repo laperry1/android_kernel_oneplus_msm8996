@@ -44,18 +44,17 @@ struct cma cma_areas[MAX_CMA_AREAS];
 unsigned cma_area_count;
 static DEFINE_MUTEX(cma_mutex);
 
-phys_addr_t cma_get_base(const struct cma *cma)
+phys_addr_t cma_get_base(struct cma *cma)
 {
 	return PFN_PHYS(cma->base_pfn);
 }
 
-unsigned long cma_get_size(const struct cma *cma)
+unsigned long cma_get_size(struct cma *cma)
 {
 	return cma->count << PAGE_SHIFT;
 }
 
-static unsigned long cma_bitmap_aligned_mask(const struct cma *cma,
-					     int align_order)
+static unsigned long cma_bitmap_aligned_mask(struct cma *cma, int align_order)
 {
 	if (align_order <= cma->order_per_bit)
 		return 0;
@@ -68,8 +67,7 @@ static unsigned long cma_bitmap_pages_to_bits(struct cma *cma,
 	return ALIGN(pages, 1UL << cma->order_per_bit) >> cma->order_per_bit;
 }
 
-static void cma_clear_bitmap(struct cma *cma, unsigned long pfn,
-			     unsigned int count)
+static void cma_clear_bitmap(struct cma *cma, unsigned long pfn, int count)
 {
 	unsigned long bitmap_no, bitmap_count;
 
@@ -158,8 +156,7 @@ core_initcall(cma_init_reserved_areas);
  * This function creates custom contiguous area from already reserved memory.
  */
 int __init cma_init_reserved_mem(phys_addr_t base, phys_addr_t size,
-				 unsigned int order_per_bit,
-				 struct cma **res_cma)
+				 int order_per_bit, struct cma **res_cma)
 {
 	struct cma *cma;
 	phys_addr_t alignment;
@@ -446,7 +443,7 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align)
  * It returns false when provided pages do not belong to contiguous area and
  * true otherwise.
  */
-bool cma_release(struct cma *cma, const struct page *pages, unsigned int count)
+bool cma_release(struct cma *cma, struct page *pages, int count)
 {
 	unsigned long pfn;
 
