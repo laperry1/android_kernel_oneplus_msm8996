@@ -37,6 +37,11 @@ Module.symvers
 *.dwo
 
 #
+# Toolchain
+#
+toolchain
+
+#
 # Top-level generic files
 #
 /tags
