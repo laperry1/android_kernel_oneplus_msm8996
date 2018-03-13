@@ -48,12 +48,6 @@ Module.symvers
 /Module.markers
 
 #
-#Out
-#
-out
-#
-
-#
 # Debian directory (make deb-pkg)
 #
 /debian/
@@ -102,3 +96,8 @@ x509.genkey
 
 # Kconfig presets
 all.config
+
+
+#Out
+#
+out
